@@ -1,0 +1,15 @@
+{
+  "name": "typecatch",
+  "version": "1.0.0",
+  "description": "modular version of ukayef.github.io",
+  "main": "index.js",
+  "scripts": {
+    "build" : "rollup ./js/index.js --file ./build/bundle.js --format iife",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nils Eidmann",
+  "license": "ISC",
+  "dependencies": {
+    "rollup": "^0.66.6"
+  }
+}
