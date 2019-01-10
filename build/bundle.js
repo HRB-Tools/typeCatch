@@ -208,6 +208,40 @@
     };
     // new comment
 
+    const plog = function (expr) {
+        let tbox = document.createElement('div');
+        tbox.setAttribute("style", "margin: 100px 100px 100px 900px; width: 38%; height: 76%; background-color: white");
+        let eString = `${expr}`;
+        tbox.innerHTML = eString;
+        document.body.appendChild(tbox);
+    };
+    const arrlog = function (arr, headers = []) {
+        let div = document.createElement('div');
+        div.setAttribute('style', 'width: 60%; margin: 100px, 100px, 100px, 900px;');
+        let html = '<table>';
+        if (headers.length > 0) {
+            html += '<tr>';
+            for (let k = 0; k < headers.length; k++) {
+                html += '<th>' + headers[k] + '</th>';
+            }
+            html += '</tr>';
+        }
+        if (arr[0][0].isArray) {
+            plog('>2');
+            return undefined;
+        } // no more than 2 layers
+        for (let i = 0; i < arr.length; i++) {
+            html += '<tr>';
+            for (let j = 0; j < arr[i].length; j++) {
+                html += '<td>' + arr[i][j] + '</td>';
+            }
+            html += '</tr>';
+        }
+        html += '</table>';
+        div.innerHTML = html;
+        document.body.appendChild(div);
+    };
+
     document.onreadystatechange = function () {
         if (document.readyState == 'complete') {
             init();
@@ -220,7 +254,6 @@
         let file = fileresult();
         let file2 = fileresult();
         file.then(function (csv) {
-            console.log(typeof (csv));
             let text = csv;
             let arr = [];
             if (typeof (text) == 'string') {
@@ -231,9 +264,10 @@
                     }
                 }
             }
-            console.log(arr);
             return arr;
         }).then(function (arr) {
+            let headers = ['Mitarbeiter Nr.', 'Arbeit', 'Ersatz', 'Stdkto.', 'U', 'F', 'B', 'K', '10', 'Nacht1', 'Nacht2', 'Nacht3', 'Sonnt.', 'Feier.', 'Überstd.', 'Leer'];
+            arrlog(arr, headers);
             let lohnarten = createLohnarten(arr);
             lohnarten[0] = ['Mitarbeiter Nr.', '801', '803', '805', '820', '885', '886', '887', '797', 'Summe'];
             let sum;

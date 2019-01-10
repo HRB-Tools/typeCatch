@@ -3,6 +3,7 @@ import { clicktouch } from './clicktouch';
 import { createLohnarten } from './lohnarten';
 import { intmath as µ } from './intmath';
 import { filedownload } from './filedownload';
+import { arrlog } from './pseudoconsole';
 document.onreadystatechange = function () {
     if (document.readyState == 'complete') {
         init();
@@ -15,7 +16,6 @@ function load() {
     let file = fileresult();
     let file2 = fileresult();
     file.then(function (csv) {
-        console.log(typeof (csv));
         let text = csv;
         let arr = [];
         if (typeof (text) == 'string') {
@@ -26,9 +26,10 @@ function load() {
                 }
             }
         }
-        console.log(arr);
         return arr;
     }).then(function (arr) {
+        let headers = ['Mitarbeiter Nr.', 'Arbeit', 'Ersatz', 'Stdkto.', 'U', 'F', 'B', 'K', '10', 'Nacht1', 'Nacht2', 'Nacht3', 'Sonnt.', 'Feier.', 'Überstd.', 'Leer'];
+        arrlog(arr, headers);
         let lohnarten = createLohnarten(arr);
         lohnarten[0] = ['Mitarbeiter Nr.', '801', '803', '805', '820', '885', '886', '887', '797', 'Summe'];
         let sum;

@@ -13,6 +13,9 @@ import {
 import {
   filedownload
 } from './filedownload';
+import { 
+  plog, htmlog, arrlog
+} from './pseudoconsole';
 
 document.onreadystatechange = function() {
   if (document.readyState == 'complete') {
@@ -40,6 +43,8 @@ function load() {
     }
     return arr;
   }).then(function(arr) {
+    let headers : string[] = ['Mitarbeiter Nr.', 'Arbeit', 'Ersatz', 'Stdkto.', 'U', 'F', 'B', 'K', '10', 'Nacht1', 'Nacht2', 'Nacht3', 'Sonnt.', 'Feier.', 'Überstd.', 'Leer']
+    arrlog(arr, headers)
     let lohnarten: any[][] = createLohnarten(arr)
     lohnarten[0] = ['Mitarbeiter Nr.', '801', '803', '805', '820', '885', '886', '887', '797', 'Summe']
     let sum
