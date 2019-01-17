@@ -195,53 +195,6 @@
         }
     };
 
-    const filedownload = function (arr, filename) {
-        let blob = new Blob([arr], { type: 'text/csv; charset=utf-8' });
-        let link = document.createElement("a");
-        let url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", filename);
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-    // new comment
-
-    const plog = function (expr) {
-        let tbox = document.createElement('div');
-        tbox.setAttribute("style", "margin: 100px 100px 100px 900px; width: 38%; height: 76%; background-color: white");
-        let eString = `${expr}`;
-        tbox.innerHTML = eString;
-        document.body.appendChild(tbox);
-    };
-    const arrlog = function (arr, headers = []) {
-        let div = document.createElement('div');
-        div.setAttribute('style', 'width: 60%; margin: 100px, 100px, 100px, 900px;');
-        let html = '<table>';
-        if (headers.length > 0) {
-            html += '<tr>';
-            for (let k = 0; k < headers.length; k++) {
-                html += '<th>' + headers[k] + '</th>';
-            }
-            html += '</tr>';
-        }
-        if (arr[0][0].isArray) {
-            plog('>2');
-            return undefined;
-        } // no more than 2 layers
-        for (let i = 0; i < arr.length; i++) {
-            html += '<tr>';
-            for (let j = 0; j < arr[i].length; j++) {
-                html += '<td>' + arr[i][j] + '</td>';
-            }
-            html += '</tr>';
-        }
-        html += '</table>';
-        div.innerHTML = html;
-        document.body.appendChild(div);
-    };
-
     document.onreadystatechange = function () {
         if (document.readyState == 'complete') {
             init();
@@ -267,15 +220,13 @@
             return arr;
         }).then(function (arr) {
             let headers = ['Mitarbeiter Nr.', 'Arbeit', 'Ersatz', 'Stdkto.', 'U', 'F', 'B', 'K', '10', 'Nacht1', 'Nacht2', 'Nacht3', 'Sonnt.', 'Feier.', 'Überstd.', 'Leer'];
-            arrlog(arr, headers);
+            console.log(arr, headers);
             let lohnarten = createLohnarten(arr);
-            lohnarten[0] = ['Mitarbeiter Nr.', '801', '803', '805', '820', '885', '886', '887', '797', 'Summe'];
-            let sum;
+            lohnarten[0] = ['Mitarbeiter Nr.', '801', '803', '805', '820', '885', '886', '887', 'Arbeitsstunden', 'Stundenkonto', 'Ersatz'];
             for (let i = 1; i < lohnarten.length; i++) {
-                sum = intmath.plus.fl(intmath.plus.fl(intmath.plus.fl(lohnarten[i][5], lohnarten[i][1]), intmath.plus.fl(lohnarten[i][2], lohnarten[i][3])), lohnarten[i][4]);
                 lohnarten[i][6] = intmath.round.fl('' + intmath.div.fl(lohnarten[i][5], '2'), 2);
                 lohnarten[i][7] = intmath.roundDown.fl('' + intmath.div.fl(lohnarten[i][5], '2'), 2);
-                lohnarten[i][9] = sum;
+                lohnarten[i][10] = !isNaN(intmath.plus.fl('0', arr[i - 1][2])) ? intmath.plus.fl('0', arr[i - 1][2]) : 0;
                 for (let j = 0; j < lohnarten[i].length; j++) {
                     if (typeof (lohnarten[i][j]) == 'string') {
                         lohnarten[i][j] = intmath.plus.fl('0', lohnarten[i][j]); // Konvertierung in Float
@@ -287,26 +238,24 @@
             file2.then(function (txt) {
                 let arr;
                 if (typeof (txt) == 'string') {
-                    arr = txt.split('\n');
+                    arr = txt.split('\r\n');
                 }
-                let stundenkonten = new Array(arr.length);
+                let stdObject = new Object();
                 for (let i = 0; i < arr.length; i++) {
-                    let split = arr[i].split(';');
-                    stundenkonten[i] = split;
+                    arr[i] = arr[i].split(';');
+                    stdObject[arr[i][0]] = arr[i].slice(1);
                 }
-                let indices = stundenkonten.map(el => el.slice(0, -1).toString());
                 let lohnarten = args[1];
-                let csv = '';
                 for (let j = 1; j < lohnarten.length; j++) {
-                    // Falls Stundenkonto -> Geleistete Std - Stundenvorgabe, ansonsten geleistete Stunden
-                    let id = indices.indexOf('' + lohnarten[j][0]);
-                    csv += lohnarten[j][0] + ';' + ((id < 0) ? lohnarten[j][8] : intmath.minus.fl('' + lohnarten[j][8], '' + stundenkonten[id][1])) + ';797\r\n';
-                    for (let k = 1; k < lohnarten[j].length - 2; k++) {
-                        csv += lohnarten[j][0] + ';' + lohnarten[j][k] + ';' + lohnarten[0][k] + '\r\n';
+                    for (let k in stdObject) {
+                        if (stdObject[k].includes(`${lohnarten[j][0] + ''}`)) {
+                            lohnarten[j][9] = parseFloat(k);
+                        }
                     }
                 }
-                csv = csv.replace(/\./g, ',');
-                filedownload(csv, 'Stundenkonten.txt');
+                console.log(lohnarten);
+                // csv = csv.replace(/\./g, ',')
+                // filedownload(csv, 'Stundenkonten.txt')
             });
         });
     }
