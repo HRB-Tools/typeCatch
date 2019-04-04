@@ -39,38 +39,36 @@ function load() {
     let headers : string[] = ['Mitarbeiter Nr.', 'Arbeit', 'Ersatz', 'Stdkto.', 'U', 'F', 'B', 'K', '10', 'Nacht1', 'Nacht2', 'Nacht3', 'Sonnt.', 'Feier.', 'Überstd.', 'Leer']
     console.log(arr, headers)
     let lohnarten: any[][] = createLohnarten(arr)
+    // lohnarten.forEach(row => {
+    //   row[6] = µ.round.fl('' + µ.div.fl(zero(row[5]), '2'), 2)
+    //   row[7] = µ.roundDown.fl('' + µ.div.fl(zero(row[5]), '2'), 2)
+    //   row[10] = µ.plus.fl('0', zero(arr[i - 1][2]))
+    //   row.forEach(item => {
+    //     if (typeof (item) == 'string') {
+    //       item = µ.plus.fl('0', zero(item))
+    //     }
+    //   })
+    // })
     lohnarten[0] = ['Mitarbeiter Nr.', '801', '803', '805', '820', '885', '886', '887', 'Arbeitsstunden', 'Stundenkonto', 'Ersatz']
-    for (let i = 1; i < lohnarten.length; i++) {
-      lohnarten[i][6] = µ.round.fl('' + µ.div.fl(zero(lohnarten[i][5]), '2'), 2)
-      lohnarten[i][7] = µ.roundDown.fl('' + µ.div.fl(zero(lohnarten[i][5]), '2'), 2)
-      lohnarten[i][10] = µ.plus.fl('0', zero(arr[i - 1][2]))
-      for (let j = 0; j < lohnarten[i].length; j++) {
-        if (typeof(lohnarten[i][j]) == 'string') {
-          lohnarten[i][j] = µ.plus.fl('0', zero(lohnarten[i][j])) // Konvertierung in Float
-        }
-      }
-    }
+
     console.log(lohnarten)
     return [arr, lohnarten]
   }).then(function(args) {
+
     file2.then(function(txt) {
-      let arr: any[]
+      let arr: any[], obj = {}
       if (typeof(txt) == 'string') {
         arr = txt.split('\r\n')
       }
-      let stdObject = {}
-      for ( let i = 0; i < arr.length; i++ ){
-        arr[i] = arr[i].split(';')
-        stdObject[arr[i][0]] = arr[i].slice(1)
+      for (let i = 0; i < arr.length; i += 5) {
+        obj[arr[i]] = arr[i + 4]
       }
+      console.log(obj)
       let lohnarten = args[1]
       for ( let j = 1; j < lohnarten.length; j++ ){
-        for ( let k in stdObject ){
-          if ( stdObject[k].includes(`${lohnarten[j][0]+''}`) ){
-            lohnarten[j][9] = parseFloat(k)
-          }
-        }
+        lohnarten[j][9] = obj[lohnarten[j][0]]
       }
+      console.log(lohnarten)
       // csv = csv.replace(/\./g, ',')
       // filedownload(csv, 'Stundenkonten.txt')
     })
