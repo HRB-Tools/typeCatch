@@ -1,6 +1,7 @@
 import { fileresult } from './fileio';
 import { clicktouch } from './clicktouch';
 import { createLohnarten } from './lohnarten';
+import { intmath as µ } from './intmath';
 document.onreadystatechange = function () {
     if (document.readyState == 'complete') {
         init();
@@ -21,16 +22,16 @@ function load() {
         let headers = ['Mitarbeiter Nr.', 'Arbeit', 'Ersatz', 'Stdkto.', 'U', 'F', 'B', 'K', '10', 'Nacht1', 'Nacht2', 'Nacht3', 'Sonnt.', 'Feier.', 'Überstd.', 'Leer'];
         console.log(arr, headers);
         let lohnarten = createLohnarten(arr);
-        // lohnarten.forEach(row => {
-        //   row[6] = µ.round.fl('' + µ.div.fl(zero(row[5]), '2'), 2)
-        //   row[7] = µ.roundDown.fl('' + µ.div.fl(zero(row[5]), '2'), 2)
-        //   row[10] = µ.plus.fl('0', zero(arr[i - 1][2]))
-        //   row.forEach(item => {
-        //     if (typeof (item) == 'string') {
-        //       item = µ.plus.fl('0', zero(item))
-        //     }
-        //   })
-        // })
+        lohnarten.forEach((row, i) => {
+            row[6] = µ.round.fl('' + µ.div.fl(zero(row[5]), '2'), 2);
+            row[7] = µ.roundDown.fl('' + µ.div.fl(zero(row[5]), '2'), 2);
+            row[10] = arr[i] ? µ.plus.fl('0', zero(arr[i][2])) : 0;
+            row.forEach(item => {
+                if (typeof (item) == 'string') {
+                    row[i] = µ.plus.fl('0', zero(item));
+                }
+            });
+        });
         lohnarten[0] = ['Mitarbeiter Nr.', '801', '803', '805', '820', '885', '886', '887', 'Arbeitsstunden', 'Stundenkonto', 'Ersatz'];
         console.log(lohnarten);
         return [arr, lohnarten];
