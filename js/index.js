@@ -2,6 +2,7 @@ import { fileresult } from './fileio';
 import { clicktouch } from './clicktouch';
 import { createLohnarten } from './lohnarten';
 import { intmath as µ } from './intmath';
+import { filedownload } from './filedownload';
 document.onreadystatechange = function () {
     if (document.readyState == 'complete') {
         init();
@@ -26,14 +27,13 @@ function load() {
             row[6] = µ.round.fl('' + µ.div.fl(zero(row[5]), '2'), 2);
             row[7] = µ.roundDown.fl('' + µ.div.fl(zero(row[5]), '2'), 2);
             row[10] = arr[i] ? µ.plus.fl('0', zero(arr[i][2])) : 0;
-            row.forEach(item => {
-                if (typeof (item) == 'string') {
-                    row[i] = µ.plus.fl('0', zero(item));
-                }
-            });
+            // row.forEach(item => {
+            //   if (typeof (item) == 'string') {
+            //     row[i] = µ.plus.fl('0', zero(item))
+            //   }
+            // })
         });
         lohnarten[0] = ['Mitarbeiter Nr.', '801', '803', '805', '820', '885', '886', '887', 'Arbeitsstunden', 'Stundenkonto', 'Ersatz'];
-        console.log(lohnarten);
         return [arr, lohnarten];
     }).then(function (args) {
         file2.then(function (txt) {
@@ -50,8 +50,10 @@ function load() {
                 lohnarten[j][9] = obj[lohnarten[j][0]];
             }
             console.log(lohnarten);
+            let csv = lohnarten.map(row => row.join(';')).join('\r\n').replace(/ /g, '').replace(/\./g, ',');
+            console.log(csv);
             // csv = csv.replace(/\./g, ',')
-            // filedownload(csv, 'Stundenkonten.txt')
+            filedownload(csv, 'Stundenkonten.txt');
         });
     });
 }

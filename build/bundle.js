@@ -195,6 +195,19 @@
         }
     };
 
+    const filedownload = function (arr, filename) {
+        let blob = new Blob([arr], { type: 'text/csv; charset=utf-8' });
+        let link = document.createElement("a");
+        let url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+    // new comment
+
     document.onreadystatechange = function () {
         if (document.readyState == 'complete') {
             init();
@@ -219,14 +232,13 @@
                 row[6] = intmath.round.fl('' + intmath.div.fl(zero(row[5]), '2'), 2);
                 row[7] = intmath.roundDown.fl('' + intmath.div.fl(zero(row[5]), '2'), 2);
                 row[10] = arr[i] ? intmath.plus.fl('0', zero(arr[i][2])) : 0;
-                row.forEach(item => {
-                    if (typeof (item) == 'string') {
-                        row[i] = intmath.plus.fl('0', zero(item));
-                    }
-                });
+                // row.forEach(item => {
+                //   if (typeof (item) == 'string') {
+                //     row[i] = µ.plus.fl('0', zero(item))
+                //   }
+                // })
             });
             lohnarten[0] = ['Mitarbeiter Nr.', '801', '803', '805', '820', '885', '886', '887', 'Arbeitsstunden', 'Stundenkonto', 'Ersatz'];
-            console.log(lohnarten);
             return [arr, lohnarten];
         }).then(function (args) {
             file2.then(function (txt) {
@@ -243,8 +255,10 @@
                     lohnarten[j][9] = obj[lohnarten[j][0]];
                 }
                 console.log(lohnarten);
+                let csv = lohnarten.map(row => row.join(';')).join('\r\n').replace(/ /g, '').replace(/\./g, ',');
+                console.log(csv);
                 // csv = csv.replace(/\./g, ',')
-                // filedownload(csv, 'Stundenkonten.txt')
+                filedownload(csv, 'Stundenkonten.txt');
             });
         });
     }

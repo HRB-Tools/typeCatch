@@ -43,15 +43,14 @@ function load() {
       row[6] = µ.round.fl('' + µ.div.fl(zero(row[5]), '2'), 2)
       row[7] = µ.roundDown.fl('' + µ.div.fl(zero(row[5]), '2'), 2)
       row[10] = arr[i] ? µ.plus.fl('0', zero(arr[i][2])) : 0
-      row.forEach(item => {
-        if (typeof (item) == 'string') {
-          row[i] = µ.plus.fl('0', zero(item))
-        }
-      })
+      // row.forEach(item => {
+      //   if (typeof (item) == 'string') {
+      //     row[i] = µ.plus.fl('0', zero(item))
+      //   }
+      // })
     })
     lohnarten[0] = ['Mitarbeiter Nr.', '801', '803', '805', '820', '885', '886', '887', 'Arbeitsstunden', 'Stundenkonto', 'Ersatz']
 
-    console.log(lohnarten)
     return [arr, lohnarten]
   }).then(function(args) {
 
@@ -65,12 +64,14 @@ function load() {
       }
       console.log(obj)
       let lohnarten = args[1]
-      for ( let j = 1; j < lohnarten.length; j++ ){
+      for (let j = 1; j < lohnarten.length; j++) {
         lohnarten[j][9] = obj[lohnarten[j][0]]
       }
       console.log(lohnarten)
+      let csv = lohnarten.map(row => row.join(';')).join('\r\n').replace(/ /g, '').replace(/\./g, ',')
+      console.log(csv)
       // csv = csv.replace(/\./g, ',')
-      // filedownload(csv, 'Stundenkonten.txt')
+      filedownload(csv, 'Stundenkonten.txt')
     })
   });
 }
