@@ -239,12 +239,22 @@
                             lohn.push([lohnarten[0].slice(1, 7)[idx], el, row[0]].join(';'));
                         });
                         if (!isNaN(row[9])) {
+                            // @ts-ignore
+                            document.querySelector('#berater').value && console.table({
+                                stundenvorgabe: row[9],
+                                "801": row[1],
+                                "803": row[2],
+                                "805": row[3],
+                                "820": row[4],
+                                "885": row[5],
+                                "797": intmath.minus.fl('' + row[9], '' + row.slice(1, 6).reduce((accumulator, currentValue) => intmath.plus.fl('' + accumulator, '' + currentValue)))
+                            });
                             lohn.push([797, intmath.minus.fl('' + row[9], '' + row.slice(1, 6).reduce((accumulator, currentValue) => intmath.plus.fl('' + accumulator, '' + currentValue))), row[0]].join(';'));
                         }
                     }
                 });
                 const csv = lohn.join('\r\n').replace(/ /g, '').replace(/\./g, ',');
-                console.table(csv);
+                // console.table(csv)
                 filedownload(csv, 'Stundenkonten.txt');
             });
         });

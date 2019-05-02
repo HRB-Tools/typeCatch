@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2b2b14d2-5fdb-432b-bc18-3187966d0106" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/bundle.js" beforeDir="false" afterPath="$PROJECT_DIR$/build/bundle.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/index.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/js/index.js.map" afterDir="false" />
@@ -31,8 +30,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ts/index.ts">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
-              <caret line="68" column="73" selection-start-line="68" selection-start-column="73" selection-end-line="68" selection-end-column="73" />
+            <state relative-caret-position="322">
+              <caret line="71" column="152" selection-start-line="71" selection-start-column="152" selection-end-line="71" selection-end-column="152" />
               <folding>
                 <element signature="e#0#40#0" expanded="true" />
                 <element signature="e#329#391#0" />
@@ -150,12 +149,12 @@
       <workItem from="1554376970326" duration="1459000" />
       <workItem from="1554898877850" duration="1715000" />
       <workItem from="1556778475556" duration="8194000" />
-      <workItem from="1556787257339" duration="2415000" />
+      <workItem from="1556787257339" duration="4108000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="21603000" />
+    <option name="totallyTimeSpent" value="23296000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -264,8 +263,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ts/index.ts">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="68" column="73" selection-start-line="68" selection-start-column="73" selection-end-line="68" selection-end-column="73" />
+        <state relative-caret-position="322">
+          <caret line="71" column="152" selection-start-line="71" selection-start-column="152" selection-end-line="71" selection-end-column="152" />
           <folding>
             <element signature="e#0#40#0" expanded="true" />
             <element signature="e#329#391#0" />
