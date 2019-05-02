@@ -232,10 +232,18 @@
                     idx && (row[9] = intmath.plus.fl(obj[row[0]], '0'));
                 }
                 console.table(lohnarten);
-                const csv = lohnarten.map(row => row.join(';'))
-                    .join('\r\n')
-                    .replace(/ /g, '')
-                    .replace(/\./g, ',');
+                const lohn = [];
+                lohnarten.forEach((row, idx) => {
+                    if (idx) {
+                        row.slice(1, 7).forEach((el, idx) => {
+                            lohn.push([lohnarten[0].slice(1, 7)[idx], el, row[0]].join(';'));
+                        });
+                        if (!isNaN(row[9])) {
+                            lohn.push([797, intmath.minus.fl('' + row[9], '' + row.slice(1, 6).reduce((accumulator, currentValue) => intmath.plus.fl('' + accumulator, '' + currentValue))), row[0]].join(';'));
+                        }
+                    }
+                });
+                const csv = lohn.join('\r\n').replace(/ /g, '').replace(/\./g, ',');
                 console.table(csv);
                 filedownload(csv, 'Stundenkonten.txt');
             });
