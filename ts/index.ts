@@ -60,7 +60,7 @@ function load() {
           .replace(/ /g, '')
           .replace(/\./g, ',')
       console.table(csv)
-      // filedownload(csv, 'Stundenkonten.txt')
+      filedownload(csv, 'Stundenkonten.txt')
     })
   });
 }

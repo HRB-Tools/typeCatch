@@ -187,6 +187,19 @@
         }
     };
 
+    const filedownload = function (arr, filename) {
+        let blob = new Blob([arr], { type: 'text/csv; charset=utf-8' });
+        let link = document.createElement("a");
+        let url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+    // new comment
+
     document.onreadystatechange = function () {
         if (document.readyState == 'complete') {
             init();
@@ -215,7 +228,6 @@
                 for (let i = 0; i < arr.length; i += 5) {
                     obj[arr[i]] = arr[i + 4];
                 }
-                console.table(obj);
                 for (const [idx, row] of lohnarten.entries()) {
                     idx && (row[9] = intmath.plus.fl(obj[row[0]], '0'));
                 }
@@ -225,7 +237,7 @@
                     .replace(/ /g, '')
                     .replace(/\./g, ',');
                 console.table(csv);
-                // filedownload(csv, 'Stundenkonten.txt')
+                filedownload(csv, 'Stundenkonten.txt');
             });
         });
     }

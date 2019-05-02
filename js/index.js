@@ -2,6 +2,7 @@ import { fileresult } from './fileio';
 import { clicktouch } from './clicktouch';
 import { createLohnarten } from './lohnarten';
 import { intmath as µ } from './intmath';
+import { filedownload } from './filedownload';
 document.onreadystatechange = function () {
     if (document.readyState == 'complete') {
         init();
@@ -30,7 +31,6 @@ function load() {
             for (let i = 0; i < arr.length; i += 5) {
                 obj[arr[i]] = arr[i + 4];
             }
-            console.table(obj);
             for (const [idx, row] of lohnarten.entries()) {
                 idx && (row[9] = µ.plus.fl(obj[row[0]], '0'));
             }
@@ -40,7 +40,7 @@ function load() {
                 .replace(/ /g, '')
                 .replace(/\./g, ',');
             console.table(csv);
-            // filedownload(csv, 'Stundenkonten.txt')
+            filedownload(csv, 'Stundenkonten.txt');
         });
     });
 }
