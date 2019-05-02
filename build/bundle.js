@@ -32,15 +32,7 @@
         });
     };
 
-    const createLohnarten = (array) => {
-        // let arr = []
-        // arr[0] = []
-        // for ( let i = 0; i < array.length; i++ ){
-        //   let k = array[i]
-        //     arr.push([parseInt(k[0]), isNaN(parseInt(k[9])) ? 0 : k[9], isNaN(parseInt(k[11])) ? 0 : k[11], isNaN(parseInt(k[12])) ? 0 : k[12], isNaN(parseInt(k[13])) ? 0 : k[13], isNaN(parseInt(k[10])) ? 0 : k[10], , , isNaN(parseInt(k[1])) ? 0 : k[1]])
-        // }
-        return [[]].concat(array.map(row => [parseInt(row[0]), row[9] || 0, row[11] || 0, row[12] || 0, row[13] || 0, row[10] || 0, , , row[1] || 0]));
-    };
+    const createLohnarten = (array) => [[]].concat(array.map(row => [parseInt(row[0]), row[9] || 0, row[11] || 0, row[12] || 0, row[13] || 0, row[10] || 0, , , row[1] || 0, , row[2] || 0]));
 
     const intmath = {
         toInt: function (decimal) {
@@ -195,19 +187,6 @@
         }
     };
 
-    const filedownload = function (arr, filename) {
-        let blob = new Blob([arr], { type: 'text/csv; charset=utf-8' });
-        let link = document.createElement("a");
-        let url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", filename);
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-    // new comment
-
     document.onreadystatechange = function () {
         if (document.readyState == 'complete') {
             init();
@@ -217,48 +196,36 @@
         clicktouch('#csv', load);
     }
     function load() {
-        let file = fileresult();
-        let file2 = fileresult();
-        file.then(function (csv) {
+        const lohndatei = fileresult(), stundendatei = fileresult();
+        lohndatei.then(function (csv) {
             if (typeof (csv) == 'string') {
                 return csv.split('\n').map(row => row.split('!') || []);
             }
         }).then(function (arr) {
-            const zero = str => isNaN(parseInt(str)) ? 0 : str;
-            let headers = ['Mitarbeiter Nr.', 'Arbeit', 'Ersatz', 'Stdkto.', 'U', 'F', 'B', 'K', '10', 'Nacht1', 'Nacht2', 'Nacht3', 'Sonnt.', 'Feier.', 'Überstd.', 'Leer'];
-            console.log(arr, headers);
-            let lohnarten = createLohnarten(arr);
-            lohnarten.forEach((row, i) => {
-                row[6] = intmath.round.fl('' + intmath.div.fl(zero(row[5]), '2'), 2);
-                row[7] = intmath.roundDown.fl('' + intmath.div.fl(zero(row[5]), '2'), 2);
-                row[10] = arr[i] ? intmath.plus.fl('0', zero(arr[i][2])) : 0;
-                // row.forEach(item => {
-                //   if (typeof (item) == 'string') {
-                //     row[i] = µ.plus.fl('0', zero(item))
-                //   }
-                // })
-            });
-            lohnarten[0] = ['Mitarbeiter Nr.', '801', '803', '805', '820', '885', '886', '887', 'Arbeitsstunden', 'Stundenkonto', 'Ersatz'];
-            return [arr, lohnarten];
-        }).then(function (args) {
-            file2.then(function (txt) {
-                let arr, obj = {};
-                if (typeof (txt) == 'string') {
-                    arr = txt.split('\r\n');
-                }
+            const zero = str => isNaN(parseInt(str)) ? 0 : str, lohnarten = [['Mitarbeiter Nr.', '801', '803', '805', '820', '885', '886', '887', 'Arbeitsstunden', 'Stundenkonto', 'Ersatz']]
+                .concat(createLohnarten(arr)
+                .map(row => row.map(cell => intmath.plus.fl('0', zero(cell))))
+                .map(row => [...row.slice(0, 6), intmath.round.fl('' + intmath.div.fl(zero(row[5]), '2'), 2), intmath.roundDown.fl('' + intmath.div.fl(zero(row[5]), '2'), 2), ...row.slice(8)])
+                .slice(1));
+            return lohnarten;
+        }).then(function (lohnarten) {
+            stundendatei.then(function (txt) {
+                const arr = String(txt).split('\r\n'), obj = {};
+                // 5 Zeilen pro Eintrag
                 for (let i = 0; i < arr.length; i += 5) {
                     obj[arr[i]] = arr[i + 4];
                 }
-                console.log(obj);
-                let lohnarten = args[1];
-                for (let j = 1; j < lohnarten.length; j++) {
-                    lohnarten[j][9] = obj[lohnarten[j][0]];
+                console.table(obj);
+                for (const [idx, row] of lohnarten.entries()) {
+                    idx && (row[9] = intmath.plus.fl(obj[row[0]], '0'));
                 }
-                console.log(lohnarten);
-                let csv = lohnarten.map(row => row.join(';')).join('\r\n').replace(/ /g, '').replace(/\./g, ',');
-                console.log(csv);
-                // csv = csv.replace(/\./g, ',')
-                filedownload(csv, 'Stundenkonten.txt');
+                console.table(lohnarten);
+                const csv = lohnarten.map(row => row.join(';'))
+                    .join('\r\n')
+                    .replace(/ /g, '')
+                    .replace(/\./g, ',');
+                console.table(csv);
+                // filedownload(csv, 'Stundenkonten.txt')
             });
         });
     }
