@@ -25,7 +25,20 @@
      #form { position: absolute; top: calc(100px + 5%); left: 5%; width: 140vh; max-width: 100%} input { width: 40%;}
  }
  /*</editor-fold>*/
+ #azubis, #rentner {
+     position: fixed;
+     top: 360px;
+     width: 220px;
+     overflow: auto;
+ }
 
+ #azubis {
+     left: 180px;
+ }
+
+ #rentner {
+     left: 480px;
+ }
 @media ( min-resolution: 72dpi )  and ( max-resolution: 107dpi ) {
     /* 100% */
     body { background-color: #ffe5cc}

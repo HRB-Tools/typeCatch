@@ -22,9 +22,21 @@ document.onreadystatechange = function() {
     init();
   }
 }
-
+const enterAndNext = el => evt => {
+  console.log(el.parentElement, evt.keycode)
+  if (evt.keycode === 13) {
+    evt.preventDefault()
+    console.log(el.parentElement)
+    const newInput = el.cloneNode(false)
+    console.log(newInput)
+    newInput.nodeValue = ''
+    newInput.addEventListener('keyup', enterAndNext)
+    el.parentElement.appendChild(newInput)
+  }
+}
 function init() {
   clicktouch('#csv', load);
+  document.querySelectorAll('#rentner input, #azubis input').forEach(el => el.addEventListener('keyup', evt => enterAndNext(el)(evt)))
 }
 
 function load() {
