@@ -219,7 +219,8 @@
                 .concat(createLohnarten(arr)
                 .map(row => row.map(cell => intmath.plus.fl('0', zero(cell))))
                 .map(row => [...row.slice(0, 6), intmath.round.fl('' + intmath.div.fl(zero(row[5]), '2'), 2), intmath.roundDown.fl('' + intmath.div.fl(zero(row[5]), '2'), 2), ...row.slice(8)])
-                .slice(1));
+                .slice(1)
+                .filter(row => !(row[0] == 957 || row[0] == 1422)));
             return lohnarten;
         }).then(function (lohnarten) {
             stundendatei.then(function (txt) {
@@ -236,20 +237,16 @@
                 lohnarten.forEach((row, idx) => {
                     if (idx) {
                         row.slice(1, 7).forEach((el, idx) => {
-                            lohn.push([lohnarten[0].slice(1, 7)[idx], el, row[0]].join(';'));
+                            el && lohn.push([lohnarten[0].slice(1, 7)[idx], el, row[0]].join(';'));
                         });
                         if (!isNaN(row[9])) {
                             // @ts-ignore
-                            document.querySelector('#berater').value && console.table({
-                                stundenvorgabe: row[9],
-                                "801": row[1],
-                                "803": row[2],
-                                "805": row[3],
-                                "820": row[4],
-                                "885": row[5],
-                                "797": intmath.minus.fl('' + row[9], '' + row.slice(1, 6).reduce((accumulator, currentValue) => intmath.plus.fl('' + accumulator, '' + currentValue)))
-                            });
-                            lohn.push([797, intmath.minus.fl('' + row[9], '' + row.slice(1, 6).reduce((accumulator, currentValue) => intmath.plus.fl('' + accumulator, '' + currentValue))), row[0]].join(';'));
+                            console.table([row[9], row.slice(1, 6).reduce((accumulator, currentValue) => intmath.plus.fl('' + accumulator, '' + currentValue), row[10])]);
+                            lohn.push([797, intmath.minus.fl('' + row[9], '' + row.slice(1, 6).reduce((accumulator, currentValue) => intmath.plus.fl('' + accumulator, '' + currentValue), row[10])), row[0]].join(';'));
+                        }
+                        else {
+                            console.table([row[8], row.slice(1, 6).reduce((accumulator, currentValue) => intmath.plus.fl('' + accumulator, '' + currentValue))]);
+                            lohn.push([797, intmath.minus.fl('' + row[8], '' + row.slice(1, 6).reduce((accumulator, currentValue) => intmath.plus.fl('' + accumulator, '' + currentValue))), row[0]].join(';'));
                         }
                     }
                 });
