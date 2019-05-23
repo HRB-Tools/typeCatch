@@ -1,6 +1,7 @@
 <!Doctype html>
 <html>
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>Hello</title>
 </head>
 <body>
@@ -8,14 +9,16 @@
 	<li id='csv'>Einlesen</li>
 	<li id='save'>Speichern</li>
 </ul>
-<form id="rentner">
-	<label>Rentner</label>
-	<input type="number">
-</form>
-<form id="azubis">
-	<label>Azubis</label>
-	<input type="number">
-</form>
+<div class="grid">
+	<form id="rentner">
+		<label>Rentner</label>
+		<input type="number">
+	</form>
+	<form id="azubis">
+		<label>Azubis</label>
+		<input type="number">
+	</form>
+</div>
 <link rel="stylesheet" href="styles.css">
 <script src="build/bundle.js"></script>
 </body>
