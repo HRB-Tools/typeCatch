@@ -205,21 +205,24 @@
             init();
         }
     };
+    // @ts-ignore
+    const rentnerUndAzubis = () => Array.from(document.querySelectorAll('#azubis input, #rentner input')).filter(el => el.value).map(el => parseInt(el.value));
     const enterAndNext = el => evt => {
         console.log(el.parentElement, evt.keycode);
-        if (evt.keycode === 13) {
+        if (evt.keyCode === 13 || evt.which === 13 || evt.keycode === 13) {
             evt.preventDefault();
             console.log(el.parentElement);
             const newInput = el.cloneNode(false);
             console.log(newInput);
-            newInput.nodeValue = '';
-            newInput.addEventListener('keyup', enterAndNext);
+            newInput.value = '';
+            newInput.addEventListener('keypress', evt => enterAndNext(newInput)(evt));
             el.parentElement.appendChild(newInput);
+            newInput.focus();
         }
     };
     function init() {
         clicktouch('#csv', load);
-        document.querySelectorAll('#rentner input, #azubis input').forEach(el => el.addEventListener('keyup', evt => enterAndNext(el)(evt)));
+        document.querySelectorAll('#rentner input, #azubis input').forEach(el => el.addEventListener('keypress', evt => enterAndNext(el)(evt)));
     }
     function load() {
         const lohndatei = fileresult(), stundendatei = fileresult();
@@ -233,7 +236,7 @@
                 .map(row => row.map(cell => intmath.plus.fl('0', zero(cell))))
                 .map(row => [...row.slice(0, 6), intmath.round.fl('' + intmath.div.fl(zero(row[5]), '2'), 2), intmath.roundDown.fl('' + intmath.div.fl(zero(row[5]), '2'), 2), ...row.slice(8)])
                 .slice(1)
-                .filter(row => !(row[0] == 957 || row[0] == 1422)));
+                .filter(row => !(rentnerUndAzubis().includes(row[0]))));
             return lohnarten;
         }).then(function (lohnarten) {
             stundendatei.then(function (txt) {
@@ -249,8 +252,8 @@
                 const lohn = [];
                 lohnarten.forEach((row, idx) => {
                     if (idx) {
-                        row.slice(1, 7).forEach((el, idx) => {
-                            el && lohn.push([lohnarten[0].slice(1, 7)[idx], el, row[0]].join(';'));
+                        row.slice(1, 8).forEach((el, idx) => {
+                            el && lohn.push([lohnarten[0].slice(1, 8)[idx], el, row[0]].join(';'));
                         });
                         if (!isNaN(row[9])) {
                             // @ts-ignore
