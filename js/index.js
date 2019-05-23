@@ -11,12 +11,9 @@ document.onreadystatechange = function () {
 // @ts-ignore
 const rentnerUndAzubis = () => Array.from(document.querySelectorAll('#azubis input, #rentner input')).filter(el => el.value).map(el => parseInt(el.value));
 const enterAndNext = el => evt => {
-    console.log(el.parentElement, evt.keycode);
     if (evt.keyCode === 13 || evt.which === 13 || evt.keycode === 13) {
         evt.preventDefault();
-        console.log(el.parentElement);
         const newInput = el.cloneNode(false);
-        console.log(newInput);
         newInput.value = '';
         newInput.addEventListener('keypress', evt => enterAndNext(newInput)(evt));
         el.parentElement.appendChild(newInput);
@@ -44,33 +41,23 @@ function load() {
     }).then(function (lohnarten) {
         stundendatei.then(function (txt) {
             const arr = String(txt).split('\r\n'), obj = {};
-            // 5 Zeilen pro Eintrag
-            for (let i = 0; i < arr.length; i += 5) {
+            for (let i = 0; i < arr.length; i += 5) { // 5 Zeilen pro Eintrag
                 obj[arr[i]] = arr[i + 4];
             }
             for (const [idx, row] of lohnarten.entries()) {
-                idx && (row[9] = µ.plus.fl(obj[row[0]], '0'));
+                idx && (row[9] = µ.plus.fl(obj[row[0]], '0')); // skip first
             }
-            console.table(lohnarten);
-            const lohn = [];
-            lohnarten.forEach((row, idx) => {
-                if (idx) {
-                    row.slice(1, 8).forEach((el, idx) => {
-                        el && lohn.push([lohnarten[0].slice(1, 8)[idx], el, row[0]].join(';'));
-                    });
-                    if (!isNaN(row[9])) {
-                        // @ts-ignore
-                        console.table([row[9], row.slice(1, 6).reduce((accumulator, currentValue) => µ.plus.fl('' + accumulator, '' + currentValue), row[10])]);
-                        lohn.push([797, µ.minus.fl('' + row[9], '' + row.slice(1, 6).reduce((accumulator, currentValue) => µ.plus.fl('' + accumulator, '' + currentValue), row[10])), row[0]].join(';'));
-                    }
-                    else {
-                        console.table([row[8], row.slice(1, 6).reduce((accumulator, currentValue) => µ.plus.fl('' + accumulator, '' + currentValue))]);
-                        lohn.push([797, µ.minus.fl('' + row[8], '' + row.slice(1, 6).reduce((accumulator, currentValue) => µ.plus.fl('' + accumulator, '' + currentValue))), row[0]].join(';'));
-                    }
-                }
-            });
-            const csv = lohn.join('\r\n').replace(/ /g, '').replace(/\./g, ',');
-            // console.table(csv)
+            const lohn = lohnarten.map((row, idx) => {
+                return row.slice(1, 8)
+                    .map((el, idx) => {
+                    if (el)
+                        return [lohnarten[0].slice(1, 8)[idx], el, row[0]].join(';');
+                })
+                    .filter(el => el)
+                    .join('\r\n')
+                    .concat('\r\n' + [797, µ.minus.fl(`${isNaN(row[9]) ? row[8] : row[9]}`, `${row.slice(1, 6).reduce((acc, val) => µ.plus.fl(`${acc}`, `${val}`), isNaN(row[9]) ? 0 : row[10])}`), row[0]].join(';'));
+            }).slice(1);
+            const csv = lohn.join('\r\n').replace(/ /g, '').replace(/\./g, ',').replace(/\r\n\r\n/g, '\r\n');
             filedownload(csv, 'Stundenkonten.txt');
         });
     });
