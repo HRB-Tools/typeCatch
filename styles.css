@@ -18,6 +18,23 @@
     background-color: #59cae7;
 }
 
+nav {
+    position: fixed;
+    top: 0;
+    display: inline-flex;
+    height: 48px;
+    width: 100%;
+}
+
+nav span {
+    z-index: 99999;
+    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+    overflow: hidden;
+    border: 1px transparent;
+    margin: 8px;
+}
 html, body {
     background-color: #faf7f5;
     font-family: Roboto, sans-serif;
