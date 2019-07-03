@@ -40,9 +40,15 @@ function load() {
         return lohnarten;
     }).then(function (lohnarten) {
         stundendatei.then(function (txt) {
-            const arr = String(txt).split('\r\n'), obj = {};
-            for (let i = 0; i < arr.length; i += 5) { // 5 Zeilen pro Eintrag
-                obj[arr[i]] = arr[i + 4];
+            // console.log(String(txt).split(/\s/)
+            //   .filter(word => /(?:^[0-9]{2,}(?:,[0-9]+)?$)|(?:^kein$)/.test(word))
+            //   .filter(word => parseInt(word) != (new Date()).getFullYear() && parseInt(word) != (new Date()).getFullYear() - 2000 && parseInt(word) != (new Date()).getFullYear() - 2001)
+            // );
+            const arr = String(txt).split(/\s/)
+                .filter(word => /(?:^[0-9]{2,}(?:,[0-9]+)?$)|(?:^kein$)/.test(word))
+                .filter(word => parseInt(word) != (new Date()).getFullYear() && parseInt(word) != (new Date()).getFullYear() - 2000 && parseInt(word) != (new Date()).getFullYear() - 2001), obj = {};
+            for (let i = 0; i < arr.length; i += 4) { // 5 Zeilen pro Eintrag
+                obj[arr[i]] = arr[i + 3];
             }
             for (const [idx, row] of lohnarten.entries()) {
                 idx && (row[9] = µ.plus.fl(obj[row[0]], '0')); // skip first
